@@ -58,6 +58,8 @@ around _inline_set_value => sub {
 
 sub _ensure_unset {
   my ($self, $instance) = @_;
+  return 
+        if ($self->has_default and ($self->get_value($instance) eq $self->default()) )
   Carp::confess("cannot change value of SetOnce attribute " . $self->name)
     if $self->has_value($instance);
 }
