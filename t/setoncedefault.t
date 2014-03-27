@@ -14,37 +14,22 @@ require MooseX::SetOnce;
   has color => (
     is     => 'rw',
     traits => [ qw(SetOnce) ],
+    default=>'Puce'
   );
 }
 
-{
-  package Orange;
-  use Moose;
 
-  has color => (
-    reader => 'get_color',
-    writer => 'set_color',
-    traits => [ qw(SetOnce) ],
-  );
-}
-
-{
-  package Tangerine;
-  use Moose;
-
-  extends 'Orange';
-}
 
 with_immutable {
 for my $set (
   [ Apple     => qw(    color     color) ],
-  [ Orange    => qw(get_color set_color) ],
-  [ Tangerine => qw(get_color set_color) ],
 ) {
   my ($class, $getter, $setter) = @$set;
   my $object = $class->new;
 
   {
+    is($object->$getter, 'Puce', "it has the default value we set");
+
     is(
       exception { $object->$setter('green'); },
       undef,
@@ -96,6 +81,6 @@ for my $set (
     is($object2->$getter, 'green', "it has the first value we set");
   }
 }
-} 'Apple', 'Orange';
+} 'Apple';
 
 done_testing;
